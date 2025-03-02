@@ -1,0 +1,2 @@
+add_executable(ode_solver ode_solver.cpp)
+target_link_libraries(ode_solver)
