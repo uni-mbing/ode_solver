@@ -1,0 +1,2 @@
+/usr/bin/ar qc libProblem.a CMakeFiles/Problem.dir/Problem.cpp.o
+/usr/bin/ranlib libProblem.a

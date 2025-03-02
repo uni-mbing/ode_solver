@@ -92,6 +92,7 @@ ode_solver_EXTERNAL_OBJECTS =
 
 src/ode_solver: src/CMakeFiles/ode_solver.dir/ode_solver.cpp.o
 src/ode_solver: src/CMakeFiles/ode_solver.dir/build.make
+src/ode_solver: src/libProblem.a
 src/ode_solver: src/CMakeFiles/ode_solver.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/max/Documents/Code/C++/ode_solver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ode_solver"
 	cd /home/max/Documents/Code/C++/ode_solver/build/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ode_solver.dir/link.txt --verbose=$(VERBOSE)
