@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/max/Documents/Code/C++/ode_solver/build",
+  "command": "/usr/bin/g++ -I/home/max/Documents/Code/C++/ode_solver/include -g -std=gnu++17 -o CMakeFiles/Problem.dir/src/Problem.cpp.o -c /home/max/Documents/Code/C++/ode_solver/src/Problem.cpp",
+  "file": "/home/max/Documents/Code/C++/ode_solver/src/Problem.cpp",
+  "output": "CMakeFiles/Problem.dir/src/Problem.cpp.o"
+},
+{
+  "directory": "/home/max/Documents/Code/C++/ode_solver/build",
+  "command": "/usr/bin/g++ -I/home/max/Documents/Code/C++/ode_solver/include -g -std=gnu++17 -o CMakeFiles/ode_solver.dir/src/ode_solver.cpp.o -c /home/max/Documents/Code/C++/ode_solver/src/ode_solver.cpp",
+  "file": "/home/max/Documents/Code/C++/ode_solver/src/ode_solver.cpp",
+  "output": "CMakeFiles/ode_solver.dir/src/ode_solver.cpp.o"
+}
+]
