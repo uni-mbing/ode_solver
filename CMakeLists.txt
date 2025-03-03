@@ -7,5 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/src)
-
+add_library(Problem src/Problem.cpp)
+add_executable(ode_solver src/ode_solver.cpp)
+target_link_libraries(ode_solver Problem)

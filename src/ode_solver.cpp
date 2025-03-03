@@ -1,17 +1,23 @@
 #include <iostream>
 #include <Problem.h>
+#include <Solver.h>
+
+typedef Vector<double> vec;
 
 int main(int argc, char** argv){
+    std::vector<double> init ={2};
+    vec y0(init);
 
-    N_Body<9> nin;
+    double t0 = 0;
+    double lambda = 0.6;
+    double stepSize = 0.5;
+    int maxIterations = 10;
 
-    std::vector<Body> in, out;
+    std::unique_ptr<ODE_Problem<double>> problem = std::make_unique<Linear_ODE>(y0, t0, lambda);
+    RK4<double> solver(std::move(problem), stepSize, maxIterations);
 
-    nin.eval(in, out);
-    nin.init(in);
-    std::cout << nin.dim << " " << nin.particles << std::endl;
+    solver.solve();
 
 
-    std::cout << "Hello World!\n";
     return 0;
 };

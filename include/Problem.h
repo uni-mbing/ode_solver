@@ -1,34 +1,171 @@
+#pragma once
+
 #include <vector>
 #include <iostream>
+#include <math.h>
+#include <string>
+#include <cassert>
 
-template<int DIM, int PARTICLES, typename T>
-class ODE_Problem{
+template<typename T>
+struct Vector{
 public:
-    virtual void eval(std::vector<T>& in, std::vector<T>& out) = 0;
-    virtual bool init(std::vector<T>& initial_conditions) = 0;
-    int dim = DIM;
-    int particles = PARTICLES;
+    Vector(int dim){
+        data = std::vector<T>(dim);
+        this->dim = data.size();
+    }
+    Vector(std::vector<T>& data_) : data(data_), dim(data.size()) {}
+    Vector() : Vector(0) {};
+    Vector(const Vector& other){
+        data = other.data;
+        dim = other.dim;
+    }
+    
+    Vector operator+(const Vector& other){
+        assert(this->dim == other.dim);
+        Vector res(this->dim);
+        for(int i = 0; i < this->dim; i++){
+            res.data[i] = this->data[i] + other.data[i];
+        }
+        return res;
+    };
+
+    Vector operator*(const double& mult){
+        Vector res(this->dim);
+        for(int i = 0; i < this->dim; i++){
+            res.data[i] = this->data[i] * mult;
+        }
+        return res;
+    };
+
+    Vector operator/(const double& div){
+        Vector res(this->dim);
+        for(int i = 0; i < this->dim; i++){
+            res.data[i] = this->data[i] / div;
+        }
+        return res;
+    }; 
+
+    T operator[](int index){
+        return this->data[index];
+    }
+
+    int getDim(){
+        return this->dim;
+    }
+
+    std::string toStr(){
+        std::string res = "[ ";
+        for(int i = 0; i < data.size() - 1; i++){
+            res += std::to_string(data[i]) + ", ";
+        }
+        res += std::to_string(data[data.size() - 1]) + " ]; DIM: " + std::to_string(this->dim);
+        return res;
+    };
+
+private:
+    std::vector<T> data;
+    int dim;
 };
+
 
 struct Body{
-    Body(double m, double rx_, double ry_, double vx_, double vy_) : mass(m), rx(rx_), ry(ry_), vx(vx_), vy(vy_) {};
-    Body(double rx_, double ry_, double vx_, double vy_) : mass(1), rx(rx_), ry(ry_), vx(vx_), vy(vy_) {};
+    Body(double m, double rx_, double ry_, double vx_, double vy_) : mass(m){
+        std::vector<double> pos = {rx_, ry_};
+        std::vector<double> vel = {vx_, vy_};
+        position = Vector<double>(pos);
+        velocity = Vector<double>(vel);
+        objectID = objectCount++;
+    };
+    Body(double rx_, double ry_, double vx_, double vy_) : Body(1, rx_, ry_, vx_, vy_) {};
+    Body() : Body(0,0,0,0,0){};
+
+
+    double dist(Body& other){
+        return sqrt(pow(position[0] - other.position[0],2) + pow(position[1] - other.position[1],2));
+    }
+
+    std::string toStr(){
+        std::string res = "Body id : "+ std::to_string(objectID) + "\n\t r: [ ";
+        for(int i = 0; i < position.getDim() - 1; i++){
+            res += std::to_string(position[i]) + ", ";
+        }
+        res += std::to_string(position[position.getDim() - 1]) + " ]\n\t v: [ ";
+
+        for(int i = 0; i < velocity.getDim() - 1; i++){
+            res += std::to_string(velocity[i]) + ", ";
+        }
+        res += std::to_string(velocity[velocity.getDim() - 1]) + " ]";
+        return res;
+    };
+
     double mass;
-    double rx, ry, vx, vy;
+    Vector<double> position;
+    Vector<double> velocity;
+    static int objectCount;
+    int objectID;
+
 };
 
-template<int N>
-class N_Body : public ODE_Problem<2, N, Body>{
+int Body::objectCount = 0;
+
+// class containing a initial value problem, defintion of evaluatin f and initial values used for it
+template<typename T>
+class ODE_Problem{
 public:
-    N_Body(double gravity_) : gravity(gravity_) {};
-    void eval(std::vector<Body>& in, std::vector<Body>& out){
-        std::cout << "Test eval" << std::endl;
+    virtual Vector<T> eval(double time, Vector<T>& yn){
+        return Vector<T>(0);
+    };
+    virtual bool init(double time, Vector<T>& initial_conditions){return true;};
+    virtual ~ODE_Problem() = default;
+
+    int dim;
+    int nParticles;
+    Vector<T> y0;
+    double t0;
+};
+
+class Linear_ODE : public ODE_Problem<double>{
+public:
+    Linear_ODE(Vector<double> y0_, double t0_, double lambda_){
+        this->y0 = y0_;
+        this->t0 = t0_;
+        this->lambda = lambda_;
     };
 
-    bool init(std::vector<Body>& initial_conditions){
-        std::cout << "Test Init" << std::endl;
+    Vector<double> eval(double time, Vector<double>& yn) override {
+        return yn * lambda;
+    };
+    bool init(double time, Vector<double>& initial_conditions) override {
         return true;
     };
+
+    int dim = 1;
+    int nParticles = 1;
+    double lambda;
+};
+
+
+class N_Body : public ODE_Problem<Body>{
+public:
+    N_Body(int nBodies, double gravity_){
+        this->nParticles = nBodies;
+        this->dim = 2;
+    };
+
+    N_Body(){
+        this->gravity = 1;
+        this->nParticles = 0;
+        this->dim = 2;
+    };
+
+    N_Body(double gravity_) : gravity(gravity_) {
+        this->gravity = gravity_;
+        this->nParticles = 0;
+        this->dim = 2;
+    };
+    // yn is given in the format, that the first n elements correspond to the position of the ith body, and the second n elements correspond to the velocity of the ith body
+    Vector<Body> eval(double time, Vector<Body>& yn);
+    bool init(double time, Vector<Body>& initial_conditions);
 
     double gravity;
 };
