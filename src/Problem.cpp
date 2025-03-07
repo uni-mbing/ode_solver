@@ -1,7 +1,7 @@
 #include <Problem.h>
 
 
-Vector<Body> N_Body::eval(double time, Vector<Body>& in){
+Vector<Body> N_Body::eval(double time, const Vector<Body>& in){
     std::cout << "Test eval" << std::endl;
     return Vector<Body>(0);
 }

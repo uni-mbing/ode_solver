@@ -32,18 +32,27 @@ int main(int argc, char** argv){
 
     std::cout << problemType << " " << solverType << std::endl;
 
-    std::vector<double> init ={2};
-    vec y0(init);
+    std::vector<double> y0_ ={2};
+    std::vector<double> x0_ ={0};
+    vec y0(y0_);
+    vec x0(x0_);
 
     double t0 = 0;
     double lambda = 0.6;
     double stepSize = 0.5;
     int maxIterations = 10;
 
-    std::unique_ptr<ODE_Problem<double>> problem = std::make_unique<Linear_ODE>(y0, t0, lambda);
-    RK4<double> solver(std::move(problem), stepSize, maxIterations);
+    RungeKutta4<Linear_ODE, double> rk4_solver(Linear_ODE(y0,x0, t0, lambda), stepSize, maxIterations);
+    ExplicitEuler<Linear_ODE, double> ee_solver(Linear_ODE(y0,x0, t0, lambda), stepSize, maxIterations);
 
-    // solver.solve();
+    rk4_solver.setPrint(true);
+    ee_solver.setPrint(true);
+
+    rk4_solver.solve();
+    std::cout << "===============================" << std::endl;
+    ee_solver.solve();
+
+    
 
 
     return 0;
