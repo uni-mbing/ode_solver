@@ -1073,3 +1073,36 @@ events:
       
       
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "/usr/share/cmake-3.28/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "/usr/lib/x86_64-linux-gnu/cmake/spdlog/spdlogConfig.cmake:40 (find_package)"
+      - "CMakeLists.txt:9 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/home/max/Documents/Code/C++/ode_solver/build/CMakeFiles/CMakeScratch/TryCompile-XI8JZR"
+      binary: "/home/max/Documents/Code/C++/ode_solver/build/CMakeFiles/CMakeScratch/TryCompile-XI8JZR"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: '/home/max/Documents/Code/C++/ode_solver/build/CMakeFiles/CMakeScratch/TryCompile-XI8JZR'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_c74f6
+        [1/2] /usr/bin/gcc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_c74f6.dir/src.c.o -c /home/max/Documents/Code/C++/ode_solver/build/CMakeFiles/CMakeScratch/TryCompile-XI8JZR/src.c
+        [2/2] : && /usr/bin/gcc   CMakeFiles/cmTC_c74f6.dir/src.c.o -o cmTC_c74f6   && :
+        
+      exitCode: 0
+...

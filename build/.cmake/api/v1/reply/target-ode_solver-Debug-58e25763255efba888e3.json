@@ -12,11 +12,16 @@
 		[
 			"add_executable",
 			"target_link_libraries",
+			"set_target_properties",
+			"include",
+			"find_package",
 			"include_directories"
 		],
 		"files" : 
 		[
-			"CMakeLists.txt"
+			"CMakeLists.txt",
+			"/usr/lib/x86_64-linux-gnu/cmake/spdlog/spdlogConfigTargets.cmake",
+			"/usr/lib/x86_64-linux-gnu/cmake/spdlog/spdlogConfig.cmake"
 		],
 		"nodes" : 
 		[
@@ -26,19 +31,45 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 13,
+				"line" : 14,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 14,
+				"line" : 15,
 				"parent" : 0
 			},
 			{
-				"command" : 2,
+				"command" : 4,
 				"file" : 0,
-				"line" : 10,
+				"line" : 9,
+				"parent" : 0
+			},
+			{
+				"file" : 2,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 52,
+				"parent" : 4
+			},
+			{
+				"file" : 1,
+				"parent" : 5
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 71,
+				"parent" : 6
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 11,
 				"parent" : 0
 			}
 		]
@@ -52,11 +83,35 @@
 					"fragment" : "-g -std=gnu++17"
 				}
 			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "FMT_SHARED"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_COMPILED_LIB"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_FMT_EXTERNAL"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_SHARED_LIB"
+				}
+			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 3,
+					"backtrace" : 8,
 					"path" : "/home/max/Documents/Code/C++/ode_solver/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "/home/max/anaconda3/include"
 				}
 			],
 			"language" : "CXX",
@@ -64,6 +119,7 @@
 			{
 				"backtraces" : 
 				[
+					2,
 					2
 				],
 				"standard" : "17"
@@ -95,8 +151,22 @@
 				"role" : "flags"
 			},
 			{
+				"fragment" : "-Wl,-rpath,/home/max/anaconda3/lib",
+				"role" : "libraries"
+			},
+			{
 				"backtrace" : 2,
 				"fragment" : "libProblem.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libspdlog.so.1.12.0",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "/home/max/anaconda3/lib/libfmt.so.9.1.0",
 				"role" : "libraries"
 			}
 		],
