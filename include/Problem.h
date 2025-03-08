@@ -5,18 +5,42 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <spdlog/spdlog.h>
 
-template <typename T> struct Vector {
+template <typename T> class Vector {
 public:
-  Vector(int dim) {
-    data = std::vector<T>(dim);
-    this->dim = data.size();
+  Vector(int dim_) {
+    this->dim = dim;
+    this->data = std::vector<T>(this->dim);
+    setXYZ();
   }
-  Vector(std::vector<T> &data_) : data(data_), dim(data.size()) {}
-  Vector() : Vector(0){};
+  Vector(std::vector<T> &data_) : data(data_), dim(data.size()) {setXYZ();}
+  Vector(){
+    this->dim = 0;
+    this->data = std::vector<T>(0); 
+  };
   Vector(const Vector &other) {
-    data = other.data;
-    dim = other.dim;
+    if(other.dim > 0){
+      this->data = std::vector<T>(other.dim);
+      this->data = other.data;
+      this->dim = other.dim;
+      setXYZ();
+    }
+  }
+
+  void setXYZ(){
+    if(dim > 3){
+      this->x = data[0];
+      this->y = data[1];
+      this->z = data[2];
+    }
+    else if(dim == 2){
+      this->x = data[0];
+      this->y = data[1];
+    }
+    else if(dim == 1){
+      this->x = data[0];
+    }
   }
 
   Vector operator+(const Vector &other) const {
@@ -54,6 +78,9 @@ public:
   }
 
   T operator[](int index) { return this->data[index]; }
+  T getX() { return this->x; };
+  T getY() { return this->y; };
+  T getZ() { return this->z; };
 
   int getDim() { return this->dim; }
 
@@ -68,7 +95,10 @@ public:
 
 private:
   std::vector<T> data;
-  int dim;
+  T x;
+  T y;
+  T z;
+  int dim = 1;
 };
 
 struct Body {
@@ -77,7 +107,7 @@ struct Body {
     std::vector<double> vel = {vx_, vy_};
     position = Vector<double>(pos);
     velocity = Vector<double>(vel);
-    objectID = objectCount++;
+    // objectID = objectCount++;
   };
   Body(double rx_, double ry_, double vx_, double vy_)
       : Body(1, rx_, ry_, vx_, vy_){};
@@ -105,53 +135,62 @@ struct Body {
   double mass;
   Vector<double> position;
   Vector<double> velocity;
-  static int objectCount;
+  // static int objectCount;
   int objectID;
 };
 
-int Body::objectCount = 0;
+// int Body::objectCount = 0;
 
 // class containing a initial value problem, defintion of evaluatin f and
 // initial values used for it
 template <typename T> class ODE_Problem {
 public:
-  virtual Vector<T> eval(double time, const Vector<T> &yn) {
+  ODE_Problem(){
+    spdlog::info("Calling Default ODE_Problem Constructor");
+  };
+  virtual Vector<T> eval(double t_i, const Vector<T> &r_i) {
     return Vector<T>(0);
   };
-  virtual bool init(double time, Vector<T> &initial_conditions) {
-    return true;
+  void init(double t_0_, Vector<T>& r_0_) {
+    this->t_0 = t_0_;
+    this->r_0 = r_0_;
   };
   virtual ~ODE_Problem() = default;
 
-  int dim;
-  int nParticles;
-  Vector<T> y0;
-  Vector<T> x0;
-  double t0;
+  int dim = 1;
+  int nParticles = 1;
+  Vector<T> r_0;
+  double t_0;
 };
 
 class Linear_ODE : public ODE_Problem<double> {
 public:
   Linear_ODE(){};
-  Linear_ODE(Vector<double> y0_, Vector<double> x0_, double t0_,
+  Linear_ODE(Vector<double>& r_0_, double t_0_,
              double lambda_) {
-    this->y0 = y0_;
-    this->x0 = x0_;
-    this->t0 = t0_;
+    spdlog::info("starting construction");
+    this->r_0 = r_0_;
+    this->t_0 = t_0_;
     this->lambda = lambda_;
+    this->dim = 1;
   };
 
-  Vector<double> eval(double time, const Vector<double> &yn) override {
-    Vector<double> res = yn * lambda;
-    return res;
-  };
-  bool init(double time, Vector<double> &initial_conditions) override {
-    return true;
+  Vector<double> eval(double t_i, const Vector<double> &r_i) override {
+    Vector<double> r_j = r_i * lambda;
+    return lambda * r_i;
+    // return r_j;
   };
 
-  int dim = 1;
-  int nParticles = 1;
   double lambda;
+};
+
+class LorenzAttractor : public ODE_Problem<double>{
+  LorenzAttractor(){
+    ;
+  };
+  Vector<double> eval(double t_i, const Vector<double> &r_i) override {
+    return Vector<double>(0);
+  };
 };
 
 class N_Body : public ODE_Problem<Body> {
@@ -175,8 +214,7 @@ public:
   // yn is given in the format, that the first n elements correspond to the
   // position of the ith body, and the second n elements correspond to the
   // velocity of the ith body
-  Vector<Body> eval(double time, const Vector<Body> &yn) override;
-  bool init(double time, Vector<Body> &initial_conditions);
+  Vector<Body> eval(double t_0, const Vector<Body> &r_i) override;
 
   double gravity;
 };

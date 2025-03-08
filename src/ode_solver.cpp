@@ -25,20 +25,23 @@ int main(int argc, char **argv) {
   // Parse die Kommandozeilenargumente
   CLI11_PARSE(app, argc, argv);
 
-  std::vector<double> y0_ = {2};
-  std::vector<double> x0_ = {0};
-  vec y0(y0_);
-  vec x0(x0_);
+  std::vector<double> r0_ = {2};
+  vec r0(r0_);
 
+  
   double t0 = 0;
   double lambda = 0.6;
   double stepSize = 0.5;
   int maxIterations = 10;
 
-  RungeKutta4<Linear_ODE, double> rk4_solver(Linear_ODE(y0, x0, t0, lambda),
-                                             stepSize, maxIterations);
-  ExplicitEuler<Linear_ODE, double> ee_solver(Linear_ODE(y0, x0, t0, lambda),
-                                              stepSize, maxIterations);
+  Linear_ODE problem(r0, t0, lambda);
+
+
+  RungeKutta4<Linear_ODE, double> rk4_solver(problem, stepSize, maxIterations);
+  spdlog::info("RK4 instansiated");
+  ExplicitEuler<Linear_ODE, double> ee_solver(problem, stepSize, maxIterations);
+
+  spdlog::info("Starting to solve");
 
   rk4_solver.setPrint(true);
   ee_solver.setPrint(true);
