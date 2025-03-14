@@ -1250,6 +1250,18 @@
 			"value" : "[TRUE][v()]"
 		},
 		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_nlohmann_json",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding nlohmann_json"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[/usr/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake][v3.11.3()]"
+		},
+		{
 			"name" : "ODE_Solver_BINARY_DIR",
 			"properties" : 
 			[
@@ -1308,6 +1320,18 @@
 			],
 			"type" : "PATH",
 			"value" : "/home/max/anaconda3/lib/cmake/fmt"
+		},
+		{
+			"name" : "nlohmann_json_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for nlohmann_json."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/usr/share/cmake/nlohmann_json"
 		},
 		{
 			"name" : "spdlog_DIR",

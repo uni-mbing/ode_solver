@@ -1,13 +1,8 @@
 #include <CLI/CLI.hpp>
 #include <Problem.h>
 #include <Solver.h>
+#include <Saver.h>
 #include <iostream>
-
-typedef Vector<double> vec;
-
-enum SOLVER_TYPE { RUNGE_KUTTA_4, LEAP_FROG, EE };
-
-enum SIMULATION_TYPE { LINEAR_ODE, N_BODY };
 
 int main(int argc, char **argv) {
   CLI::App app{"ODE Solver App"};
@@ -22,32 +17,36 @@ int main(int argc, char **argv) {
   app.add_option("-p,--problem", problemType,
                  "Input problem type: LINEAR, N_BODY");
 
+  int maxIterations = 1000;
+  app.add_option("-m,--maxIterations", maxIterations);
+
+  double stepSize = 0.001;
+  app.add_option("-t,--stepSize", stepSize);
+
   // Parse die Kommandozeilenargumente
   CLI11_PARSE(app, argc, argv);
 
-  std::vector<double> r0_ = {2};
+  std::vector<double> r0_ = {1.0, 0.0, 0.0};
   vec r0(r0_);
 
-  
   double t0 = 0;
-  double lambda = 0.6;
-  double stepSize = 0.5;
-  int maxIterations = 10;
 
-  Linear_ODE problem(r0, t0, lambda);
+  LorenzAttractor problem(r0, t0);
 
 
-  RungeKutta4<Linear_ODE, double> rk4_solver(problem, stepSize, maxIterations);
-  spdlog::info("RK4 instansiated");
-  ExplicitEuler<Linear_ODE, double> ee_solver(problem, stepSize, maxIterations);
+  RungeKutta4<LorenzAttractor, double> rk4_solver(problem, stepSize, maxIterations);
+  ExplicitEuler<LorenzAttractor, double> ee_solver(problem, stepSize, maxIterations);
 
-  spdlog::info("Starting to solve");
+  // spdlog::info("Starting to solve");
 
   rk4_solver.setPrint(true);
-  ee_solver.setPrint(true);
+  // ee_solver.setPrint(true);
 
   rk4_solver.solve();
-  ee_solver.solve();
+  // ee_solver.solve();
+
+  rk4_solver.write("/home/max/Documents/Code/bin/Lorenz_RK4.json");
+  // ee_solver.write("/home/max/Documents/Code/bin/Lorenz_EE.json");
 
   return 0;
 };

@@ -7,10 +7,14 @@
 #include <vector>
 #include <spdlog/spdlog.h>
 
+
+enum PROBLEM_TYPE { LINEAR_ODE, N_BODY };
+
+
 template <typename T> class Vector {
 public:
   Vector(int dim_) {
-    this->dim = dim;
+    this->dim = dim_;
     this->data = std::vector<T>(this->dim);
     setXYZ();
   }
@@ -77,7 +81,8 @@ public:
     return vec / scalar;
   }
 
-  T operator[](int index) { return this->data[index]; }
+  T& operator[](int index) { return this->data[index]; }
+  const T& operator[](int index) const { return this->data[index]; }
   T getX() { return this->x; };
   T getY() { return this->y; };
   T getZ() { return this->z; };
@@ -100,6 +105,8 @@ private:
   T z;
   int dim = 1;
 };
+
+typedef Vector<double> vec;
 
 struct Body {
   Body(double m, double rx_, double ry_, double vx_, double vy_) : mass(m) {
@@ -145,9 +152,7 @@ struct Body {
 // initial values used for it
 template <typename T> class ODE_Problem {
 public:
-  ODE_Problem(){
-    spdlog::info("Calling Default ODE_Problem Constructor");
-  };
+  ODE_Problem(){};
   virtual Vector<T> eval(double t_i, const Vector<T> &r_i) {
     return Vector<T>(0);
   };
@@ -158,7 +163,9 @@ public:
   virtual ~ODE_Problem() = default;
 
   int dim = 1;
-  int nParticles = 1;
+  int nBodies = 1;
+  std::string descr;
+
   Vector<T> r_0;
   double t_0;
 };
@@ -168,7 +175,7 @@ public:
   Linear_ODE(){};
   Linear_ODE(Vector<double>& r_0_, double t_0_,
              double lambda_) {
-    spdlog::info("starting construction");
+    this->descr = "Linear ODE f(r) = lambda * r";
     this->r_0 = r_0_;
     this->t_0 = t_0_;
     this->lambda = lambda_;
@@ -185,30 +192,56 @@ public:
 };
 
 class LorenzAttractor : public ODE_Problem<double>{
+public:
   LorenzAttractor(){
-    ;
+    this->descr = "Lorenz Attractor";
+    this->a = 28.0;
+    this->b = 10.0;
+    this->c = (8.0/3.0);
+    this->dim = 3;
+  };
+  LorenzAttractor(Vector<double>& r_0_, double t_0_,
+    double a_ = 10.0, double b_ = 28.0, double c_ = (8.0/3.0)){
+    this->descr = "Lorenz Attractor";
+    this->r_0 = r_0_;
+    this->t_0 = t_0_;
+    this->a = a_;
+    this->b = b_;
+    this->c = c_;
+    this->dim = 3;
   };
   Vector<double> eval(double t_i, const Vector<double> &r_i) override {
-    return Vector<double>(0);
+    Vector<double> r_j(this->dim);
+    r_j[0] = a*(r_i[1] - r_i[0]);
+    r_j[1] = r_i[0] * (b - r_i[2]) - r_i[1];
+    r_j[2] = r_i[0] * r_i[1] - c * r_i[2];
+    return r_j;
   };
+
+  double a;
+  double b;
+  double c;
 };
 
 class N_Body : public ODE_Problem<Body> {
 public:
   N_Body(int nBodies, double gravity_) {
-    this->nParticles = nBodies;
+    this->descr = "N Body Problem";
+    this->nBodies = nBodies;
     this->dim = 2;
   };
 
   N_Body() {
+    this->descr = "N Body Problem";
     this->gravity = 1;
-    this->nParticles = 0;
+    this->nBodies = 0;
     this->dim = 2;
   };
 
   N_Body(double gravity_) : gravity(gravity_) {
+    this->descr = "N Body Problem";
     this->gravity = gravity_;
-    this->nParticles = 0;
+    this->nBodies = 0;
     this->dim = 2;
   };
   // yn is given in the format, that the first n elements correspond to the

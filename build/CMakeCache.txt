@@ -244,6 +244,9 @@ ODE_Solver_SOURCE_DIR:STATIC=/home/max/Documents/Code/C++/ode_solver
 //The directory containing a CMake configuration file for fmt.
 fmt_DIR:PATH=/home/max/anaconda3/lib/cmake/fmt
 
+//The directory containing a CMake configuration file for nlohmann_json.
+nlohmann_json_DIR:PATH=/usr/share/cmake/nlohmann_json
+
 //The directory containing a CMake configuration file for spdlog.
 spdlog_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/spdlog
 
@@ -399,6 +402,8 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//Details about finding nlohmann_json
+FIND_PACKAGE_MESSAGE_DETAILS_nlohmann_json:INTERNAL=[/usr/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake][v3.11.3()]
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 
