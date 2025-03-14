@@ -172,6 +172,7 @@ public:
 
 class Linear_ODE : public ODE_Problem<double> {
 public:
+  
   Linear_ODE(){};
   Linear_ODE(Vector<double>& r_0_, double t_0_,
              double lambda_) {
@@ -193,13 +194,7 @@ public:
 
 class LorenzAttractor : public ODE_Problem<double>{
 public:
-  LorenzAttractor(){
-    this->descr = "Lorenz Attractor";
-    this->a = 28.0;
-    this->b = 10.0;
-    this->c = (8.0/3.0);
-    this->dim = 3;
-  };
+  LorenzAttractor(){};
   LorenzAttractor(Vector<double>& r_0_, double t_0_,
     double a_ = 10.0, double b_ = 28.0, double c_ = (8.0/3.0)){
     this->descr = "Lorenz Attractor";
@@ -222,6 +217,32 @@ public:
   double b;
   double c;
 };
+
+class LotkaVolterra : public ODE_Problem<double>{
+  public:
+    LotkaVolterra(){};
+    LotkaVolterra(Vector<double>& r_0_, double t_0_,double alpha_ = 0.5, double beta_ = 0.05, double delta_ = 0.05, double gamma_ = 0.5){
+      this->descr = "Lotka Volterra";
+      this->r_0 = r_0_;
+      this->t_0 = t_0_;
+      this->alpha = alpha_;
+      this->beta = beta_;
+      this->delta = delta_;
+      this->gamma = gamma_;
+      this->dim = 2;
+    };
+    Vector<double> eval(double t_i, const Vector<double> &r_i) override {
+      Vector<double> r_j(this->dim);
+      r_j[0] = this->alpha * r_i[0] - this->beta * r_i[0] * r_i[1];
+      r_j[1] = this->delta * r_i[0] * r_i[1] - this->gamma * r_i[1];
+      return r_j;
+    };
+  
+    double alpha;
+    double beta;
+    double delta;
+    double gamma;
+  };
 
 class N_Body : public ODE_Problem<Body> {
 public:

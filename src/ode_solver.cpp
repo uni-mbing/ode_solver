@@ -1,7 +1,6 @@
 #include <CLI/CLI.hpp>
 #include <Problem.h>
 #include <Solver.h>
-#include <Saver.h>
 #include <iostream>
 
 int main(int argc, char **argv) {
@@ -26,27 +25,34 @@ int main(int argc, char **argv) {
   // Parse die Kommandozeilenargumente
   CLI11_PARSE(app, argc, argv);
 
-  std::vector<double> r0_ = {1.0, 0.0, 0.0};
-  vec r0(r0_);
+  std::vector<double> r0_lorenz = {1.0, 0.0, 0.0};
+  std::vector<double> r0_lotkaVolterra = {30, 15};
+  vec r0Lorenz(r0_lorenz);
+  vec r0LotkaVolerra(r0_lotkaVolterra);
 
   double t0 = 0;
 
-  LorenzAttractor problem(r0, t0);
+  LorenzAttractor lorenzProblem(r0Lorenz, t0);
+  LotkaVolterra lotkaVolterraProblem(r0LotkaVolerra, t0);
 
 
-  RungeKutta4<LorenzAttractor, double> rk4_solver(problem, stepSize, maxIterations);
-  ExplicitEuler<LorenzAttractor, double> ee_solver(problem, stepSize, maxIterations);
 
-  // spdlog::info("Starting to solve");
+  RungeKutta4<LorenzAttractor, double> rk4LorenzSolver(lorenzProblem, stepSize, maxIterations);
+  ExplicitEuler<LorenzAttractor, double> eeLorenzSolver(lorenzProblem, stepSize, maxIterations);
 
-  rk4_solver.setPrint(true);
+  RungeKutta4<LotkaVolterra, double> rk4LotkaVolterraSolver(lotkaVolterraProblem, stepSize, maxIterations);
+  ExplicitEuler<LotkaVolterra, double> eeLotkaVolterraSolver(lotkaVolterraProblem, stepSize, maxIterations);
+
+  rk4LorenzSolver.setPrint(true);
   // ee_solver.setPrint(true);
+  rk4LotkaVolterraSolver.setPrint(true);
 
-  rk4_solver.solve();
+  rk4LorenzSolver.solve();
   // ee_solver.solve();
+  rk4LotkaVolterraSolver.solve();
 
-  rk4_solver.write("/home/max/Documents/Code/bin/Lorenz_RK4.json");
-  // ee_solver.write("/home/max/Documents/Code/bin/Lorenz_EE.json");
+  rk4LorenzSolver.write("/home/max/Documents/Code/bin/Lorenz_RK4.json");
+  rk4LotkaVolterraSolver.write("/home/max/Documents/Code/bin/LotkaVolterra_RK4.json");
 
   return 0;
 };
